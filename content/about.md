@@ -9,12 +9,7 @@ weight: 50
 comment: false
 mathjax: false
 ---
-# About Me
 
-我是猴子工程師 Lofairy，也可以叫我 Karos
-現任 104 資訊科技 Senior Programmer
+我是程式設計師 Lofairy，也可以叫我 Karos
 
-* [Email](mailto:your@email.com)
-* [Github](https://github.com/lofairy)
-* [Linkedin](https://www.linkedin.com/in/%E6%98%93%E8%9E%8D-%E6%9E%97-91ab82156)
-
+現任職於 104 資訊科技 擔任 Senior Programmer

@@ -1,6 +1,6 @@
 baseURL = "https://lofairy.github.io"
 languageCode = "zh-TW"
-title = "猴子工程師筆記本"
+title = "Lofairy's note"
 enableRobotsTXT = true
 enableEmoji = true
 theme = "jane"
@@ -52,10 +52,10 @@ defaultContentLanguage = "en"           # Default language to use
   weight = 40
   identifier = "categories"
   url = "/categories/"
-[[menu.main]]
-  name = "external-link"
-  weight = 50
-  url = "https://gohugo.io"
+# [[menu.main]]
+#   name = "external-link"
+#   weight = 50
+#   url = "https://gohugo.io"
 
 
 [params]
@@ -64,8 +64,8 @@ defaultContentLanguage = "en"           # Default language to use
   homeFullContent = false   # if false, show post summaries on home page. Othewise show full content.
   rssFullContent = true     # if false, Rss feed instead of the summary
 
-  # site info (optional)                                  # 站点信息（可选，不需要的可以直接注释掉）
-  logoTitle = "猴子工程師筆記本"        # default: the title value    # 默认值: 上面设置的title值
+  # site info (optional)    # 站点信息（可选，不需要的可以直接注释掉）
+  logoTitle = "Lofairy's 程式筆記"   # default: the title value    # 默认值: 上面设置的title值
   keywords = ["Lofairy", "coding", "note"]
   description = ""
 
