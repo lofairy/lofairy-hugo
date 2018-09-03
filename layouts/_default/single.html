@@ -2,11 +2,11 @@
 <article class="post bg-white">
   <!-- post-header -->
   <header class="post-header">
-    <h1 class="post-title">{{ .Title }}</h1>
+    <h1 class="post-title">About Me</h1>
     {{ partial "post/i18nlist.html" . }}
     <div class="post-meta">
       <span class="post-time">
-        {{ .Date.Format (.Site.Params.dateFormatToUse | default "2006-01-02") }}
+        LastMod: {{ .Date.Format (.Site.Params.dateFormatToUse | default "2006-01-02") }}
       </span>
     </div>
   </header>
@@ -20,7 +20,8 @@
   </div>
 
   <!-- Copyright -->
-  {{ partial "post/copyright.html" . }}
+  <!-- I do not wnat show copyright in about-me page. -->
+  <!-- {{ partial "post/copyright.html" . }} -->
 
   <!-- Reward -->
   {{ partial "post/reward.html" . }}
