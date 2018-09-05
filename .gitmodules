@@ -1,0 +1,8 @@
+[submodule "themes/jane"]
+	path = themes/jane
+	url = https://github.com/lofairy/hugo-theme-jane
+	branch = master
+[submodule "public"]
+	path = public
+	url = https://github.com/lofairy/lofairy.github.io
+	branch = master
