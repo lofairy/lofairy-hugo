@@ -10,31 +10,42 @@ categories: [
 ]
 ---
 ## 我們經常遇到這樣的問題
-在開發的 repo 叫 dev；另一個 repo 叫 util。我將 util 導入 dev 當作函式庫。
-我想要 git 處理兩個 repos 是獨立的項目，而非 util 的程式碼被 copy 到 dev repo。
+我有一個專案 repo 叫 dev；另一個 repo 叫 util。我想將 util 導入 dev 當作函式庫。
+在以前，我是用 ide 的功能來導入其他專案到另一個專案。
+那我能不能用 git 幫我達成這個需求呢？答案是：YES.
 
-git submodule 可以達成上面的需求。它允許你在 dev 加入 util，當你對 dev 做 commit 時，並不會將 util 的程式碼當作 dev 的一部分。git 只會紀錄 util 的「版號」。
-
+git submodule 允許你在 dev 加入 util，並且兩個專案的 commit 是獨立的。當 util 有新的 commit，dev 的 commit 紀錄的是 util 的 commit id。
 ![](https://imgur.com/QITwnYG.jpg)
 
-<!-- more -->
+## 我認為的優點
+- parent 專案只會紀錄 submodule 的 commit id，放在 repo 的程式不包含 submodule 的程式碼。
+- parent 與 submodule 專案的 commit 獨立，內容和目的明確分立。
+- submodule 可以一次更新 parent 專案所有的 submodule。
 
+## 我認為的缺點
+- submodule 允許脫離與 repo 依賴的 commit，沒有辦法追朔的 commit 會很麻煩。(下面練習的第五點)
+- submodule 使用情境，比較適合用在引用的 submodule 較少改變的專案上。如果你常常在主要專案變動 submodule 並 push 到遠端倉庫，它比較不合適。
+- submodule 會新增設定資料檔，像是 `.gitmodule`。
+
+<!-- more -->
 ## 怎麼運作的?
 本章節內容是基於[這裡](http://dan.mccloy.info/2015/06/11/Git-submodules/)修改的，看得懂英文的朋友建議看這一篇。
 
+> 範例：我有一個專案 repo 叫 dev；另一個 repo 叫 util。我想將 util 導入 dev 當作函式庫。
+
 1. **建立兩個 repos，並推上 github**。在開發的 repo 叫 dev；另一個 repo 叫 util，它在 dev 的裡面。
 
-2. **建立 submodule**。在 dev 的根目錄，使用 `git submodule add git@github.com:lofairy/util.git` 建立submodule關聯。這時產生的 submodule 是 utils HEAD 的「斷頭狀態」，util 並不真的存在於 dev branch，在 util 所做的任何異動也不會被 dev 追蹤。
+2. **建立 submodule**。在 dev 的根目錄，使用 `git submodule add git@github.com:lofairy/util.git` 建立submodule關聯。這時產生的 submodule 是 utils HEAD 的「斷頭狀態」，util 並不真的存在於 dev branch，在 util 所做的任何 commit 也不會被 dev 追蹤。
 
 3. **在 dev repos 加入以下設定**：
     - `git config status.submodulesummary 1` - 執行 `git status` 內容會包含 submodule 的改變。
     - `git config diff.submodule log` - 執行 `git diff` 會顯示 submodule 的 commit 訊息。
 
-4. **把 submodule 放在 branch 上**。對 submodule 的資料夾做 checkout就行了，實際執行就是 `cd util; git checkout master`。現在你對 util 的改變能夠追蹤了。如果沒有執行這一步，你對 util 做的改變將只是個快照，沒有其他 node 可以參考，也不會顯示在 github 的 commit 裡。
+4. **將 local submodule 與 repo 的 branch 綁定依賴**。對 submodule 的資料夾做 checkout就行了，實際執行就是 `cd util; git checkout master`。現在你對 util 的改變能夠追蹤了。如果沒有執行這一步，你對 util 做的改變將只是個沒有任何依賴的「快照」，push 後不會顯示在 github 的 commit 裡。
 
-5. **決定 local submodule 的狀態**。submodule 雖然依附在 dev，並且通常情況下只會跟著 dev 的 repo 一起改變，但協作者仍有可能會從 upstream push 異動。你可以用 `cd util; git fetch; git pull origin/magster` 進入 submodule 去做更新。或者是從 dev repo 用 `git submodule update --remote --merge` 將 remote 的異動以 merge 的方式合併進 local submodule。
+5. **決定 local submodule 的狀態**。submodule 雖然依附在 dev，並且通常情況下只會跟著 dev 的專案 一起改變，但協作者仍有可能會從 upstream push commit。你可以用 `cd util; git fetch; git pull origin/magster` 進入 submodule 去做更新。或者是從 dev 專案目錄用 `git submodule update --remote --merge` 將 repo 的 commit 以 merge 的方式合併進 local submodule。
 
-`--merge` 會是必要的參數，如果少了它，你 local submodule 異動 將會存在於一個沒父沒母的「快照」分支。
+`--merge` 會是必要的參數，如果少了它，你 local submodule 將會產並切換到一個沒父沒母的「快照」分支。
 
 以下是對照圖：
 with `--merge`
@@ -42,10 +53,12 @@ with `--merge`
 without `--merge`
 ![](https://imgur.com/YUfMwGN.jpg)
 
-6. **PUSH**。一般的 `git push` 不會 push submodule 的異動。你可以選擇用 `git push --recurse-submodules=check` 在 push dev 前檢查是否有 submodule 異動沒有 push (如果有，git push 就會警告你並停止繼續動作)，或是用 `git push --recurse-submodules=on-demand` 讓 git 幫你在 push dev 前 自動 push submodule 異動。
+6. **PUSH**。一般的 `git push` 不會 push submodule 的 commit，需要加上特別的參數。
+- `git push --recurse-submodules=check` 在 push dev 前檢查是否有 submodule commit 沒有 push (如果有，git push 就會警告你並停止動作)
+- `git push --recurse-submodules=on-demand` 讓 git 幫你在 push dev 前自動 push submodule commit。
 
 ## 如何移除 submodule
-移除的方法稍微麻煩了點，以下是由 stack overflow 的 [這篇](https://stackoverflow.com/questions/1260748/how-do-i-remove-a-submodule) 文章分享的方法：
+移除的方法稍微麻煩了點，以下是由 [stack overflow](https://stackoverflow.com/questions/1260748/how-do-i-remove-a-submodule) 文章分享的方法：
 ```
 1. Delete the relevant section from the .gitmodules file.
 2. Stage the .gitmodules changes git add .gitmodules
@@ -57,18 +70,23 @@ without `--merge`
 8. rm -rf path_to_submodule
 ```
 
+以上面的範例來說：
+
+1. 從 .gitmodules 刪除與 submodule (util) 相關的段落。
+2. run `submodule deinit util -f` 清除 `.git/config` 與 submodule (util)) 相關段落，
+   並清除 submodule 資料夾的程式。如果要一次清除，將 util 改成 --all 即可。
+3. run `git rm -rf --cached util`
+4. run `git commit -m "remove submodule util"`
+5. run `rm -rf util` 將資料夾刪除
+
+
 P.S.當你在 repo add submodule 後，會增加一些檔案跟設定：
 - `.git/module/(submodule name)` 儲存了完整的 submodule repo 內容。
 - `.git/config` 會儲存包含目前 repo所擁有的 submodule 資訊
 - `.gitsubmodule` 會儲存目前 repo所擁有的 submodule 資訊
 
-## 缺點很明顯
-1. submodule 真的很容易出錯，除非你是個 git 熟手，不然在使用上導致斷頭的案例比比皆是。
-2. 一旦你的異動斷了頭，並且 push 到某個快照分支，就沒有補救的機會了，你得手動把異動在寫一次。
-3. **多人協作的開發環境不應該使用它**。一人出錯，大家升天。
-
 ## git subtree 是另一個選擇
-git submodule 是 git 以前官方推薦管理子項目的功能。從 git 1.5.2 開始，git 推薦使用 git subtree，雖然不具備依賴功能，卻能達到我們的要求。等我研究完後，會再發一篇文說明。
+git submodule 是 git 以前官方推薦管理子項目的功能。從 git 1.5.2 開始，git 推薦使用 git subtree，雖然不具備依賴功能，卻能達到我們的要求。等我研究完後，會再發一篇文分享。
 
 ---
 ## Reference:
