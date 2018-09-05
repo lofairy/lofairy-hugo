@@ -3,6 +3,7 @@ title: "Git submodule : 導入其他 repository 並保持互相獨立"
 date: 2018-09-04T10:50:00+08:00
 draft: false
 tags: [
+    "git",
     "submodule",
 ]
 categories: [
@@ -15,6 +16,7 @@ categories: [
 那我能不能用 git 幫我達成這個需求呢？答案是：YES.
 
 git submodule 允許你在 dev 加入 util，並且兩個專案的 commit 是獨立的。當 util 有新的 commit，dev 的 commit 紀錄的是 util 的 commit id。
+
 ![](https://imgur.com/QITwnYG.jpg)
 
 ## 我認為的優點
@@ -50,6 +52,7 @@ git submodule 允許你在 dev 加入 util，並且兩個專案的 commit 是獨
 以下是對照圖：
 with `--merge`
 ![](https://imgur.com/xwD7ies.jpg)
+
 without `--merge`
 ![](https://imgur.com/YUfMwGN.jpg)
 
