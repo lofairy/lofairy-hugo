@@ -22,12 +22,10 @@ git submodule 允許你在 dev 加入 util，並且兩個專案的 commit 是獨
 ## 我認為的優點
 - parent 專案只會紀錄 submodule 的 commit id，放在 repo 的程式不包含 submodule 的程式碼。
 - parent 與 submodule 專案的 commit 獨立，內容和目的明確分立。
-- submodule 可以一次更新 parent 專案所有的 submodule。
 
 ## 我認為的缺點
-- submodule 允許脫離與 repo 依賴的 commit，沒有辦法追朔的 commit 會很麻煩。(下面練習的第五點)
-- submodule 使用情境，比較適合用在引用的 submodule 較少改變的專案上。如果你常常在主要專案變動 submodule 並 push 到遠端倉庫，它比較不合適。
-- submodule 會新增設定資料檔，像是 `.gitmodule`。
+- 操作不當可能會導致 local submodule 與 remote 脫離依賴，沒有辦法追朔的 commit 會很麻煩。(下面練習的第五點)
+- submodule 會有額外的 metadata，像是 `.gitmodule`。
 
 <!-- more -->
 ## 怎麼運作的?
