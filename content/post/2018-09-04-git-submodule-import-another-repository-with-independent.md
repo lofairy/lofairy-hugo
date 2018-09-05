@@ -74,7 +74,7 @@ without `--merge`
 以上面的範例來說：
 
 1. 從 .gitmodules 刪除與 submodule (util) 相關的段落。
-2. run `submodule deinit util -f` 清除 `.git/config` 與 submodule (util)) 相關段落，
+2. run `git submodule deinit util -f` 清除 `.git/config` 與 submodule (util)) 相關段落，
    並清除 submodule 資料夾的程式。如果要一次清除，將 util 改成 --all 即可。
 3. run `git rm -rf --cached util`
 4. run `git commit -m "remove submodule util"`
